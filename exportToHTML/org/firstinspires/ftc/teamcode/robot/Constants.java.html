@@ -1,0 +1,60 @@
+<html>
+<head>
+<title>Constants.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #000080; font-weight: bold;}
+.s1 { color: #000000;}
+.s2 { color: #808080; font-style: italic;}
+.s3 { color: #0000ff;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Constants.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span>org.firstinspires.ftc.teamcode.robot;
+
+<span class="s2">/**</span>
+ * Created by Dravid-C on 11/18/2018
+ *
+ */
+<span class="s0">public class </span>Constants {
+    <span class="s0">public static final double </span>DISTANCE_TO_MIDDLE_MINERAL = <span class="s3">25.0</span>;
+    <span class="s0">public static final double </span>DISTANCE_TO_OUTER_MINERALS = <span class="s3">40.0</span>;
+    <span class="s0">public static final double </span>DISTANCE_TO_PICKUP_MINERAL = <span class="s3">3.5</span>;
+
+    <span class="s0">public static final double </span>CRATER_DISTANCE_TO_MIDDLE_MINERAL = <span class="s3">20.0</span>;
+    <span class="s0">public static final double </span>CRATER_DISTANCE_TO_OUTER_MINERALS = <span class="s3">34.0</span>;
+
+    <span class="s0">public static final double </span>DISTANCE_FROM_MIDDLE_TO_DEPOT = <span class="s3">39.0</span>;
+    <span class="s0">public static final double </span>DISTANCE_FROM_OUTER_TO_DEPOT = <span class="s3">35.0</span>;
+
+    <span class="s0">public static final double </span>ANGLE_BLUE_DEPOT_TO_BLUE_CRATER = <span class="s3">120.0</span>;
+    <span class="s0">public static final double </span>ANGLE_BLUE_DEPOT_TO_RED_CRATER = -<span class="s3">120.0</span>;
+    <span class="s0">public static final double </span>ANGLE_RED_DEPOT_TO_RED_CRATER = <span class="s3">120.0</span>;
+    <span class="s0">public static final double </span>ANGLE_RED_DEPOT_TO_BLUE_CRATER = -<span class="s3">120.0</span>;
+    <span class="s0">public static final double </span>ANGLE_BLUE_CRATER_TO_BLUE_CRATER = <span class="s3">30.0</span>;
+    <span class="s0">public static final double </span>ANGLE_RED_CRATER_TO_RED_CRATER = <span class="s3">30.0</span>;
+
+    <span class="s0">public static final double </span>DISTANCE_FROM_DEPOT_TO_CRATER = <span class="s3">85.0</span>;
+
+    <span class="s0">public static final double </span>SPEED_GENERAL_MOVE = <span class="s3">0.4</span>;
+    <span class="s0">public static final double </span>SPEED_SLOW_MOVE = <span class="s3">0.15</span>;
+
+    <span class="s0">public static final double </span>DISTANCE_LIFT_TO_DROP_PIN = <span class="s3">999</span>;
+    <span class="s0">public static final double </span>DISTANCE_LIFT_TO_GROUND = <span class="s3">2.0</span>;
+    <span class="s0">public static final double </span>DISTANCE_GROUND_TO_LIFT = -<span class="s3">2.0</span>;
+
+    <span class="s0">public static final double </span>PIXY_MIDDLE = <span class="s3">1.6</span>;
+    <span class="s0">public static final double </span>PIXY_DEBOUNCE = <span class="s3">0.07</span>;
+    <span class="s0">public static final double </span>PIXY_FOV_WINDOW = <span class="s3">0.3</span>;
+
+    <span class="s0">public static final double </span>DISTANCE_CRATER_REVERSE_MIDDLE = <span class="s3">0.5 </span>* CRATER_DISTANCE_TO_MIDDLE_MINERAL;
+    <span class="s0">public static final double </span>DISTANCE_CRATER_REVERSE_OUTER = <span class="s3">0.5 </span>* CRATER_DISTANCE_TO_OUTER_MINERALS;
+
+}</pre>
+</body>
+</html>

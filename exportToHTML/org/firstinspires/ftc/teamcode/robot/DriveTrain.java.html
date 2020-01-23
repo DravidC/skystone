@@ -1,0 +1,204 @@
+<html>
+<head>
+<title>DriveTrain.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #000080; font-weight: bold;}
+.s1 { color: #000000;}
+.s2 { color: #808080; font-style: italic;}
+.s3 { color: #0000ff;}
+.s4 { color: #008000; font-weight: bold;}
+.s5 { color: #808080; font-weight: bold; font-style: italic;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+DriveTrain.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span>org.firstinspires.ftc.teamcode.robot;
+
+<span class="s0">import </span>com.qualcomm.robotcore.hardware.DcMotor;
+<span class="s0">import </span>com.qualcomm.robotcore.hardware.DcMotorSimple;
+<span class="s0">import </span>com.qualcomm.robotcore.util.ElapsedTime;
+
+<span class="s2">/**</span>
+ * Created by Dravid-C on 10/7/2018.
+ *
+ */
+<span class="s0">public class </span>DriveTrain {
+    <span class="s0">private </span>Robot robot = <span class="s0">null</span>;
+    <span class="s0">private </span>ElapsedTime runtime = <span class="s0">new </span>ElapsedTime();
+
+    <span class="s0">public </span>DcMotor leftDrive = <span class="s0">null</span>;
+    <span class="s0">public </span>DcMotor leftDrive1 = <span class="s0">null</span>;
+    <span class="s0">public </span>DcMotor rightDrive1 = <span class="s0">null</span>;
+    <span class="s0">public </span>DcMotor rightDrive = <span class="s0">null</span>;
+
+    <span class="s0">public static final int </span>PULSES_PER_MTR_ROTATION = <span class="s3">384</span>;
+    <span class="s0">public static final double </span>INCHES_PER_WHEEL_ROTATION = <span class="s3">12.566</span>;
+    <span class="s0">public static final double </span>GEAR_RATIO = <span class="s3">2.0</span>; <span class="s2">// Motor to Wheel</span>
+    <span class="s0">private static final boolean </span>INVERT_DIRECTION_SIGN = <span class="s0">false</span>;
+
+    <span class="s0">private static final double </span>GYRO_TURN_KP = <span class="s3">12.5 </span>/ <span class="s3">1000.0</span>;
+    <span class="s0">private static final double </span>GYRO_TURN_KI = <span class="s3">0.35 </span>/ <span class="s3">1000.0</span>;
+    <span class="s0">private static final double </span>GYRO_TURN_KD = <span class="s3">0.0 </span>/ <span class="s3">1000.0</span>;
+
+    <span class="s0">private static final double </span>PIXY_TURN_KP = <span class="s3">2000.0 </span>/ <span class="s3">1000.0</span>;
+    <span class="s0">private static final double </span>PIXY_TURN_KI = <span class="s3">0.0 </span>/ <span class="s3">1000.0</span>;
+    <span class="s0">private static final double </span>PIXY_TURN_KD = <span class="s3">0.0 </span>/ <span class="s3">1000.0</span>;
+
+    <span class="s2">//kp = 7.0, ki = 0.3, kd =0.5</span>
+    <span class="s0">public </span>DriveTrain(Robot inRobot){
+        robot = inRobot;
+
+        leftDrive = robot.hardwareMap.get(DcMotor.<span class="s0">class</span>,<span class="s4">&quot;leftFront&quot;</span>);
+        rightDrive = robot.hardwareMap.get(DcMotor.<span class="s0">class</span>, <span class="s4">&quot;rightFront&quot;</span>);
+        leftDrive1 = robot.hardwareMap.get(DcMotor.<span class="s0">class</span>, <span class="s4">&quot;leftRear&quot;</span>);
+        rightDrive1 = robot.hardwareMap.get(DcMotor.<span class="s0">class</span>, <span class="s4">&quot;rightRear&quot;</span>);
+
+        leftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftDrive1.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightDrive1.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+    }
+
+    <span class="s2">/**</span>
+     * This is the message about what the funciton does.
+     * You can have multiple lines and it won't care, though
+     * you should have all of your parameters and your return value
+     * listed below.
+     *
+     * <span class="s5">@param </span><span class="s2">targetAngle This is something</span>
+     * <span class="s5">@param </span><span class="s2">timeoutSec This is something else</span>
+     */
+
+    /**
+     * Uses encoders on both wheels to drive a certain distance in inches
+     * <span class="s5">@param </span><span class="s2">distance IN INCHES</span>
+     * <span class="s5">@param </span><span class="s2">power 0 to 1</span>
+     * <span class="s5">@param </span><span class="s2">timeoutSec</span>
+     */
+    <span class="s0">public void </span>driveForwardEncoder(<span class="s0">double </span>distance, <span class="s0">double </span>power, <span class="s0">double </span>timeoutSec) {
+    <span class="s0">double </span>numMtrRotations = distance * (GEAR_RATIO / INCHES_PER_WHEEL_ROTATION);
+        <span class="s0">int </span>pulses =  (<span class="s0">int</span>) (numMtrRotations * PULSES_PER_MTR_ROTATION);
+
+        <span class="s0">if </span>(INVERT_DIRECTION_SIGN) {
+            pulses = -pulses;
+        }
+
+        DcMotor.RunMode prevLeftMode = leftDrive.getMode();
+        DcMotor.RunMode prevRightMode = rightDrive.getMode();
+        DcMotor.RunMode prevleftMode1 = leftDrive1.getMode();
+        DcMotor.RunMode prevRightMode1 = rightDrive1.getMode();
+
+        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftDrive1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftDrive1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDrive1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        leftDrive.setTargetPosition(pulses);
+        rightDrive.setTargetPosition(pulses);
+        leftDrive1.setTargetPosition(pulses);
+        rightDrive1.setTargetPosition(pulses);
+
+        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftDrive1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDrive1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        runtime.reset();
+        leftDrive.setPower(Math.abs(power));
+        rightDrive.setPower(Math.abs(power));
+        leftDrive1.setPower(Math.abs(power));
+        rightDrive1.setPower(Math.abs(power));
+
+        <span class="s0">while </span>(robot.opModeIsActive() &amp;&amp;
+                (runtime.seconds() &lt; timeoutSec) &amp;&amp;
+                (leftDrive.isBusy() &amp;&amp; rightDrive.isBusy())) {
+            robot.telemetry.addData(<span class="s4">&quot;Autonomous&quot;</span>,  <span class="s4">&quot;Autonomous: %s&quot;</span>, Boolean.toString(robot.isRunningAutonomous()));
+            robot.telemetry.addData(<span class="s4">&quot;Path1&quot;</span>,  <span class="s4">&quot;Running to %7d :%7d&quot;</span>, pulses,  pulses);
+            robot.telemetry.addData(<span class="s4">&quot;Path2&quot;</span>,  <span class="s4">&quot;Running at %7d :%7d :%7d :%7d&quot;</span>,
+                    leftDrive.getCurrentPosition(),
+                    rightDrive.getCurrentPosition(),
+                    leftDrive1.getCurrentPosition(),
+                    rightDrive1.getCurrentPosition());
+            robot.telemetry.update();
+        }
+
+        leftDrive.setPower(<span class="s3">0</span>);
+        leftDrive1.setPower(<span class="s3">0</span>);
+        rightDrive.setPower(<span class="s3">0</span>);
+        rightDrive1.setPower(<span class="s3">0</span>);
+
+        leftDrive.setMode(prevLeftMode);
+        leftDrive1.setMode(prevleftMode1);
+        rightDrive.setMode(prevRightMode);
+        rightDrive1.setMode(prevRightMode1);
+    }
+
+    <span class="s0">public void </span>driveBackwardEncoder(<span class="s0">double </span>distance, <span class="s0">double </span>power, <span class="s0">double </span>timeoutSec) {
+        driveForwardEncoder(-distance, power, timeoutSec);
+    }
+
+    <span class="s0">public void </span>driveForwardUntilTilted(<span class="s0">double </span>power, <span class="s0">double </span>timeoutSec){
+        <span class="s0">if </span>(INVERT_DIRECTION_SIGN) {
+            power = -Math.abs(power);
+        }
+
+        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        runtime.reset();
+
+        leftDrive.setPower(power);
+        rightDrive.setPower(power);
+
+        <span class="s0">while </span>(robot.opModeIsActive() &amp;&amp;
+                (runtime.seconds() &lt; timeoutSec) &amp;&amp;
+                (runtime.seconds() &lt; <span class="s3">1.5 </span>|| !robot.sensors.robotIsTilted())) {
+        }
+
+        leftDrive.setPower(<span class="s3">0</span>);
+        rightDrive.setPower(<span class="s3">0</span>);
+
+    }
+
+    <span class="s0">public void </span>driveTillDistanceLessThanValue(<span class="s0">double </span>distance, <span class="s0">double </span>power, <span class="s0">double </span>timeoutSec){
+        <span class="s0">if </span>(INVERT_DIRECTION_SIGN) {
+            power = -power;
+        }
+
+        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        runtime.reset();
+
+        <span class="s0">while </span>(robot.sensors.getDistanceCM() &gt; distance &amp;&amp;
+                runtime.seconds() &lt; timeoutSec &amp;&amp;
+                robot.opModeIsActive()){
+            leftDrive.setPower(power);
+            rightDrive.setPower(power);
+
+        }
+
+        leftDrive.setPower(<span class="s3">0.0</span>);
+        rightDrive.setPower(<span class="s3">0.0</span>);
+
+    }
+
+
+}</pre>
+</body>
+</html>

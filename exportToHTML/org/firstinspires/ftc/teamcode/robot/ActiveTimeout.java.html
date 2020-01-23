@@ -1,0 +1,49 @@
+<html>
+<head>
+<title>ActiveTimeout.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #000080; font-weight: bold;}
+.s1 { color: #000000;}
+.s2 { color: #808080; font-style: italic;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+ActiveTimeout.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span>org.firstinspires.ftc.teamcode.robot;
+
+<span class="s0">import </span>com.qualcomm.robotcore.util.ElapsedTime;
+
+<span class="s2">/**</span>
+ * Created by Dravid-C on 11/4/2018.
+ * lol lets get it
+ */
+<span class="s0">public class </span>ActiveTimeout {
+    <span class="s0">private </span>ElapsedTime runtime = <span class="s0">new </span>ElapsedTime();
+    <span class="s0">private double </span>secondsActive;
+    <span class="s0">private boolean </span>lastActive = <span class="s0">false</span>;
+
+    <span class="s0">public </span>ActiveTimeout(<span class="s0">double </span>secondsActive) {
+        <span class="s0">this</span>.secondsActive = secondsActive;
+    }
+
+    <span class="s0">public boolean </span>checkValid(<span class="s0">boolean </span>currentValue) {
+        <span class="s0">if </span>(currentValue) {
+            <span class="s0">if </span>(lastActive &amp;&amp; runtime.seconds() &gt; secondsActive)
+                <span class="s0">return true</span>;
+            <span class="s0">else if </span>(!lastActive) {
+                lastActive = <span class="s0">true</span>;
+                runtime.reset();
+            }
+        } <span class="s0">else </span>{
+            lastActive = <span class="s0">false</span>;
+        }
+        <span class="s0">return false</span>;
+    }
+}</pre>
+</body>
+</html>

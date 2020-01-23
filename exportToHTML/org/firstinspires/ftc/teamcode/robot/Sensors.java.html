@@ -1,0 +1,105 @@
+<html>
+<head>
+<title>Sensors.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #000080; font-weight: bold;}
+.s1 { color: #000000;}
+.s2 { color: #808080; font-style: italic;}
+.s3 { color: #008000; font-weight: bold;}
+.s4 { color: #0000ff;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Sensors.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span>org.firstinspires.ftc.teamcode.robot;
+
+<span class="s0">import </span>com.qualcomm.hardware.bosch.BNO055IMU;
+<span class="s0">import </span>com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+<span class="s0">import </span>com.qualcomm.hardware.rev.Rev2mDistanceSensor;
+<span class="s0">import </span>com.qualcomm.robotcore.hardware.AnalogInput;
+<span class="s0">import </span>com.qualcomm.robotcore.hardware.DigitalChannel;
+<span class="s0">import </span>com.qualcomm.robotcore.hardware.DistanceSensor;
+
+<span class="s0">import </span>org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+<span class="s0">import </span>org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+<span class="s0">import </span>org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+<span class="s0">import </span>org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+<span class="s0">import </span>org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+<span class="s0">import </span>org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+<span class="s0">import </span>org.firstinspires.ftc.robotcore.external.navigation.Position;
+<span class="s0">import </span>org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+
+<span class="s2">/**</span>
+ * Created by Dravid-C on 10/7/2018.
+ *
+ */
+<span class="s0">public class </span>Sensors {
+    <span class="s0">private </span>Robot robot = <span class="s0">null</span>;
+
+    <span class="s0">private </span>DistanceSensor rawRearDistanceSensor = <span class="s0">null</span>;
+    <span class="s0">public </span>Rev2mDistanceSensor rearDistanceSensor = <span class="s0">null</span>;
+    <span class="s0">public </span>BNO055IMU imu = <span class="s0">null</span>;
+    <span class="s0">public </span>AnalogInput pixy_x_location = <span class="s0">null</span>;
+    <span class="s0">public </span>DigitalChannel pixy_visible = <span class="s0">null</span>;
+    Acceleration gravity;
+
+
+
+    <span class="s0">public </span>Sensors(Robot inRobot){
+        robot = inRobot;
+        imu = robot.hardwareMap.get(BNO055IMU.<span class="s0">class</span>, <span class="s3">&quot;imu&quot;</span>);
+        initializeIMU();
+        pixy_x_location = robot.hardwareMap.get(AnalogInput.<span class="s0">class</span>, <span class="s3">&quot;pixy&quot;</span>);
+        pixy_visible = robot.hardwareMap.get(DigitalChannel.<span class="s0">class</span>, <span class="s3">&quot;pixy_visible&quot;</span>);
+        pixy_visible.setMode(DigitalChannel.Mode.INPUT);
+
+        rawRearDistanceSensor = robot.hardwareMap.get(DistanceSensor.<span class="s0">class</span>, <span class="s3">&quot;rear_distance_sensor&quot;</span>);
+        rearDistanceSensor = (Rev2mDistanceSensor)rawRearDistanceSensor;
+
+    }
+    <span class="s0">private void </span>initializeIMU () {
+        BNO055IMU.Parameters parameters = <span class="s0">new </span>BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = <span class="s3">&quot;BNO055IMUCalibration.json&quot;</span>; <span class="s2">// see the calibration sample opmode</span>
+        parameters.loggingEnabled      = <span class="s0">true</span>;
+        parameters.loggingTag          = <span class="s3">&quot;IMU&quot;</span>;
+        parameters.accelerationIntegrationAlgorithm = <span class="s0">new </span>JustLoggingAccelerationIntegrator();
+
+        imu.initialize(parameters);
+        imu.startAccelerationIntegration(<span class="s0">new </span>Position(), <span class="s0">new </span>Velocity(), <span class="s4">1000</span>);
+
+    }
+
+    <span class="s0">public boolean </span>robotIsTilted(){
+        <span class="s0">return </span>Math.abs(imu.getGravity().yAccel) &gt; <span class="s4">0.8</span>;
+    }
+    <span class="s0">public float </span>getHeading() {
+        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        <span class="s0">float </span>unnormalized = AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle);
+        <span class="s0">return </span>AngleUnit.DEGREES.normalize(unnormalized);
+    }
+
+    <span class="s0">public double </span>addToHeading(<span class="s0">double </span>degrees) {
+        <span class="s2">// Everything is backwards</span>
+        <span class="s0">return </span>getHeading() - degrees;
+    }
+
+    <span class="s0">public double </span>addToHeading(<span class="s0">double </span>startingHeading, <span class="s0">double </span>degrees) {
+        <span class="s2">// Everything is backwards</span>
+        <span class="s0">return </span>startingHeading   - degrees;
+    }
+
+    <span class="s0">public double </span>getDistanceCM(){
+        <span class="s0">return </span>rearDistanceSensor.getDistance(DistanceUnit.CM);
+    }
+
+}
+</pre>
+</body>
+</html>
