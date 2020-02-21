@@ -59,11 +59,11 @@ public class autonomous_red_left_side extends LinearOpMode {
     }
 
     private void moveLeft () {
-        robot.driveTrain.strafeLeft(29.5, 0.5, 10.0);
+        robot.driveTrain.strafeLeft(34, 0.5, 10.0);
     }
 
     private void strafeLeft () {
-        robot.driveTrain.strafeLeft(15, 0.5, 10.0);
+        robot.driveTrain.strafeLeft(25, 0.5, 10.0);
     }
 
 }

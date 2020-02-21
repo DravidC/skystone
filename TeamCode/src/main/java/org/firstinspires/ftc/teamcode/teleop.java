@@ -123,13 +123,13 @@ public class teleop extends OpMode {
 
 
 
-        if(gamepad2.right_bumper){
+        if(gamepad1.right_bumper){
             intakeMotor.setPower(-1.0);
             intakeMotor1.setPower(1.0);
-        } else if(gamepad2.left_bumper){
+        } else if(gamepad1.left_bumper){
             intakeMotor.setPower(1.0);
             intakeMotor1.setPower(-1.0);
-        } else if(gamepad2.b){
+        } else if(gamepad1.b){
             intakeMotor1.setPower(0.0);
             intakeMotor.setPower(0.0);
         }
@@ -140,14 +140,14 @@ public class teleop extends OpMode {
 
         if(gamepad2.a){
             rotateIntakeServo.setPosition(1.0);
-        } else if (gamepad2.y) {
+        } else if (gamepad2.b) {
             rotateIntakeServo.setPosition(0.0);
         }
 
         if(gamepad1.a){
             bumperServo3.setPosition(0.0);
             bumperServo4.setPosition(1.0);
-        } else if (gamepad1.b) {
+        } else if (gamepad1.x) {
             bumperServo3.setPosition(1.0);
             bumperServo4.setPosition(0.0);
         }
@@ -158,9 +158,9 @@ public class teleop extends OpMode {
             intakeServo.setPosition(1.0);
         }
 
-        if(gamepad1.x){
+        if(gamepad2.x){
             capStone.setPosition(0.0);
-        } else if (gamepad1.y){
+        } else if (gamepad2.y){
             capStone.setPosition(1.0);
         }
 

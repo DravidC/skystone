@@ -10,6 +10,7 @@ public class Robot {
     public HardwareMap hardwareMap = null;
     public Telemetry telemetry = null;
     public DriveTrain driveTrain = null;
+    public Sensors sensors = null;
     public Intake intake = null;
 
 
@@ -18,6 +19,7 @@ public class Robot {
         this.telemetry = telemetry;
         driveTrain = new DriveTrain(this);
         intake = new Intake(this);
+        sensors = new Sensors(this);
     }
 
     public Robot(LinearOpMode currentOpMode, HardwareMap inHardwareMap, Telemetry telemetry){
