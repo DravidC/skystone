@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
-@Autonomous(name="autnomous blue_left_side", group="Testing")
-public class Autonomous_blue_left_side extends LinearOpMode {
+@Autonomous(name="autnomous blue_left_side color", group="Testing")
+public class autonomous_left_side_color extends LinearOpMode {
     private Robot robot = null;
 
     @Override
@@ -31,6 +31,11 @@ public class Autonomous_blue_left_side extends LinearOpMode {
         moveForward();
 
         strafeRight();
+
+        moveForwardABitLmao();
+
+        scanTheFuckingGayStones();
+
     }
 
     private void initialize() {
@@ -62,6 +67,10 @@ public class Autonomous_blue_left_side extends LinearOpMode {
     }
 
     private void strafeRight () {
-        robot.driveTrain.strafeRight(25, 0.5, 10.0);
+        robot.driveTrain.strafeRight(41, 0.5, 10.0);
     }
+
+    private void moveForwardABitLmao () {robot.driveTrain.driveForwardEncoder(1, 0.25, 10.0);}
+
+    private void scanTheFuckingGayStones () {robot.sensors.checkStones(10.0);}
 }

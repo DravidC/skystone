@@ -21,4 +21,5 @@ public class Autonomous_test extends LinearOpMode {
         waitForStart();
         robot.driveTrain.strafeRight(30, 0.5, 10.0);
     }
+
 }
